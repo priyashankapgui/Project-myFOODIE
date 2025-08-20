@@ -3,7 +3,7 @@ import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 import { ThemeProvider } from "@/context/ThemeContext";
 import Image from "next/image";
-import Link from "next/link";
+import Logo from "../../../../public/images/logo/auth-log.png";
 import React from "react";
 
 export default function AuthLayout({
@@ -21,16 +21,16 @@ export default function AuthLayout({
               {/* <!-- ===== Common Grid Shape Start ===== --> */}
               <GridShape />
               <div className="flex flex-col items-center max-w-xs">
-                <Link href="/" className="block mb-4">
-                  <Image
-                    width={231}
-                    height={48}
-                    src="./images/logo/auth-logo.svg"
-                    alt="Logo"
-                  />
-                </Link>
+
+                <Image
+                  width={241}
+                  height={48}
+                  src={Logo}
+                  alt="Logo"
+                />
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  Free and Open-Source Tailwind CSS Admin Dashboard Template
+                  Welcome to MyFoodie! <br />
+                  Healthy choices, delicious results.
                 </p>
               </div>
             </div>

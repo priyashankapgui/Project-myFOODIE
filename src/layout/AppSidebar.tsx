@@ -5,19 +5,21 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
-  CalenderIcon,
-  ChevronDownIcon,
-  GridIcon,
-  HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
-} from "../icons/index";
-
+  FiGrid,
+  FiCalendar,
+  FiChevronDown,
+  FiList,
+  FiUser,
+  FiPieChart,
+  FiBox,
+  FiPlus,
+  FiMoreHorizontal,
+  FiCoffee,
+  FiShoppingBag,
+  FiUsers,
+  FiFile,
+  FiLayers
+} from "react-icons/fi";
 
 type NavItem = {
   name: string;
@@ -26,36 +28,61 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
+
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <FiGrid size={20} />,
     name: "Dashboard",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
-    icon: <CalenderIcon />,
+    icon: <FiCalendar size={20} />,
     name: "Calendar",
     path: "/calendar",
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <FiCoffee size={20} />,
+    name: "Today Special",
+    path: "/today-special",
+  },
+  {
+    icon: <FiShoppingBag size={20} />,
+    name: "My Orders",
+    path: "/orders",
+  },
+  {
+    icon: <FiUsers size={20} />,
+    name: "Users",
+    subItems: [
+      { name: "Employees", path: "/users/employees" },
+      { name: "Suppliers", path: "/users/suppliers" },
+      { name: "Managers", path: "/users/managers" },
+
+    ],
+  },
+  {
+    icon: < FiLayers size={20} />,
+    name: "Complaints",
+    path: "/complaints",
+  },
+  {
+    icon: <FiUser size={20} />,
     name: "User Profile",
     path: "/profile",
   },
-
   {
     name: "Forms",
-    icon: <ListIcon />,
+    icon: <FiList size={20} />,
     subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   },
   {
     name: "Tables",
-    icon: <TableIcon />,
+    icon: <FiLayers size={20} />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
   {
     name: "Pages",
-    icon: <PageIcon />,
+    icon: <FiFile size={20} />,
     subItems: [
       { name: "Blank Page", path: "/blank", pro: false },
       { name: "404 Error", path: "/error-404", pro: false },
@@ -65,7 +92,7 @@ const navItems: NavItem[] = [
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
+    icon: <FiPieChart />,
     name: "Charts",
     subItems: [
       { name: "Line Chart", path: "/line-chart", pro: false },
@@ -73,7 +100,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <FiBox />,
     name: "UI Elements",
     subItems: [
       { name: "Alerts", path: "/alerts", pro: false },
@@ -85,7 +112,7 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <PlugInIcon />,
+    icon: <FiPlus />,
     name: "Authentication",
     subItems: [
       { name: "Sign In", path: "/signin", pro: false },
@@ -93,6 +120,7 @@ const othersItems: NavItem[] = [
     ],
   },
 ];
+
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -120,7 +148,7 @@ const AppSidebar: React.FC = () => {
                 className={` ${openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-icon-active"
                   : "menu-item-icon-inactive"
-                  }`}
+                  } `}
               >
                 {nav.icon}
               </span>
@@ -128,7 +156,7 @@ const AppSidebar: React.FC = () => {
                 <span className={`menu-item-text`}>{nav.name}</span>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
+                <FiChevronDown
                   className={`ml-auto w-5 h-5 transition-transform duration-200  ${openSubmenu?.type === menuType &&
                     openSubmenu?.index === index
                     ? "rotate-180 text-brand-500"
@@ -224,11 +252,9 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => path === pathname;
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
   useEffect(() => {
-    // Check if the current path matches any submenu item
     let submenuMatched = false;
     ["main", "others"].forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
@@ -247,14 +273,12 @@ const AppSidebar: React.FC = () => {
       });
     });
 
-    // If no submenu item matches, close the open submenu
     if (!submenuMatched) {
       setOpenSubmenu(null);
     }
   }, [pathname, isActive]);
 
   useEffect(() => {
-    // Set the height of the submenu items when the submenu is opened
     if (openSubmenu !== null) {
       const key = `${openSubmenu.type}-${openSubmenu.index}`;
       if (subMenuRefs.current[key]) {
@@ -338,7 +362,7 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
                 ) : (
-                  <HorizontaLDots />
+                  <FiMoreHorizontal />
                 )}
               </h2>
               {renderMenuItems(navItems, "main")}
@@ -354,14 +378,13 @@ const AppSidebar: React.FC = () => {
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Others"
                 ) : (
-                  <HorizontaLDots />
+                  <FiMoreHorizontal />
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>
           </div>
         </nav>
-
       </div>
     </aside>
   );
