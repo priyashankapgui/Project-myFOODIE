@@ -1,15 +1,51 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
+import { loginUser } from "@/api/authApis";
+import { loginSchema, type LoginFormData } from "@/validation/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
+    try {
+      const response = await loginUser(data.email, data.password);
+      console.log("Login successful:", response);
+      router.push("/dashboard");
+
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      setError("root", {
+        type: "manual",
+        message: error.response?.data?.message || "Invalid email or password"
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -31,67 +67,96 @@ export default function SignInForm() {
               Enter your email and password to sign in!
             </p>
           </div>
-          <div>
 
-            <div className="relative py-3 sm:py-5">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-              </div>
-
-            </div>
-            <form>
-              <div className="space-y-6">
-                <div>
-                  <Label>
-                    Email <span className="text-error-500">*</span>{" "}
-                  </Label>
-                  <Input placeholder="info@gmail.com" type="email" />
-                </div>
-                <div>
-                  <Label>
-                    Password <span className="text-error-500">*</span>{" "}
-                  </Label>
-                  <div className="relative">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-6">
+              <div>
+                <Label htmlFor="email">
+                  Email <span className="text-error-500">*</span>{" "}
+                </Label>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
                     <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      id="email"
+                      type="email"
+                      placeholder="info@gmail.com"
+                      error={!!errors.email}
+                      defaultValue={field.value}
+                      onChange={field.onChange}
                     />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                    >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                      )}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Checkbox checked={isChecked} onChange={setIsChecked} />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
-                    </span>
-                  </div>
-                  <Link
-                    href="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <div>
-                  <Button className="w-full" size="sm">
-                    Sign in
-                  </Button>
-                </div>
+                  )}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-error-500">{errors.email.message}</p>
+                )}
               </div>
-            </form>
 
+              <div>
+                <Label htmlFor="password">
+                  Password <span className="text-error-500">*</span>{" "}
+                </Label>
+                <div className="relative">
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter your password"
+                        error={!!errors.password}
+                        defaultValue={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                  >
+                    {showPassword ? (
+                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    ) : (
+                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    )}
+                  </span>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-error-500">{errors.password.message}</p>
+                )}
+              </div>
 
-          </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                </div>
+                <Link
+                  href="/reset-password"
+                  className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              {errors.root && (
+                <div className="p-3 text-sm text-error-500 bg-error-50 rounded-md dark:bg-error-950/20">
+                  {errors.root.message}
+                </div>
+              )}
+
+              <div>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="sm"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Signing in..." : "Sign in"}
+                </Button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
