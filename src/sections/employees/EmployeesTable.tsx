@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import {
     Table,
@@ -12,48 +11,16 @@ import Image from "next/image";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
 import { FiTrash, FiEye, FiEdit } from "react-icons/fi";
-import { getAllNormalEmployees } from "@/api/normalEmployeeApis";
-import { NormalEmployee } from "@/types/httpResponseType";
+import { getAllNormalEmployees, deleteEmployee } from "@/api/normalEmployeeApis";
+import { NormalEmployee, TableEmployee } from "@/types/httpResponseType";
+import Popup from "@/components/ui/popup/Popup";
+import EmployeeForm from "./EditEmployeeForm";
+import DeleteConfirmation from "@/components/common/DeleteConfirmation";
+import { toast } from "react-toastify";
 
 
-interface TableEmployee {
-    id: string;
-    user: {
-        image: string;
-        name: string;
-        role: string;
-        email: string;
-    };
-    department: {
-        name: string;
-    };
-    status: string;
-    budget: string;
-    position: string;
-    departmentId: number;
-}
-
-// Default user image (you can add this to your public/images folder)
 const DEFAULT_USER_IMAGE = "/images/user/default-user.jpg";
-
-// Default team images for demonstration
-const DEFAULT_TEAM_IMAGES = [
-    "/images/user/user-22.jpg",
-    "/images/user/user-23.jpg",
-    "/images/user/user-24.jpg",
-];
-
-// Helper function to generate random status
-const getRandomStatus = () => {
-    const statuses = ["Active", "Pending", "Cancel"];
-    return statuses[Math.floor(Math.random() * statuses.length)];
-};
-
-// Helper function to generate random budget
-const getRandomBudget = () => {
-    const budgets = ["2.5K", "3.9K", "4.5K", "12.7K", "24.9K"];
-    return budgets[Math.floor(Math.random() * budgets.length)];
-};
+type PopupMode = "add" | "edit" | "view";
 
 export default function EmployeesTable() {
     const [employees, setEmployees] = useState<TableEmployee[]>([]);
@@ -61,6 +28,10 @@ export default function EmployeesTable() {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [popupMode, setPopupMode] = useState<PopupMode>("add");
+    const [selectedEmployee, setSelectedEmployee] = useState<TableEmployee | undefined>(undefined);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     useEffect(() => {
         fetchEmployees();
@@ -80,17 +51,10 @@ export default function EmployeesTable() {
                     role: emp.position,
                     email: emp.user.email
                 },
-                projectName: `Project ${emp.departmentId}`,
-                team: {
-                    images: DEFAULT_TEAM_IMAGES
-                },
                 department: {
                     name: emp.department.name
                 },
-                status: getRandomStatus(),
-                budget: getRandomBudget(),
                 position: emp.position,
-                departmentId: emp.departmentId
             }));
 
             setEmployees(transformedEmployees);
@@ -111,20 +75,41 @@ export default function EmployeesTable() {
         setCurrentPage(page);
     };
 
-    // Action handlers
-    const handleView = (id: string) => {
-        console.log("View employee with ID:", id);
-
-    };
 
     const handleEdit = (id: string) => {
-        console.log("Edit employee with ID:", id);
-
+        setPopupMode("edit");
+        const employee = employees.find(emp => emp.id === id);
+        setSelectedEmployee(employee);
+        setIsPopupOpen(true);
     };
 
+    const handleView = (id: string) => {
+        setPopupMode("view");
+        const employee = employees.find(emp => emp.id === id);
+        setSelectedEmployee(employee);
+        setIsPopupOpen(true);
+    };
+
+
+    //TODO: Action Delete
     const handleDelete = (id: string) => {
-        console.log("Delete employee with ID:", id);
-        // Add your delete logic here
+        const employee = employees.find(emp => emp.id === id);
+        if (employee) {
+            setSelectedEmployee(employee);
+            setIsDeleteOpen(true);
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (!selectedEmployee) return;
+        try {
+            console.log("Deleting employee with ID:", selectedEmployee.id);
+            await deleteEmployee(selectedEmployee.id);
+            toast.success("Employee deleted successfully!");
+            fetchEmployees(); // refresh table
+        } catch (err: unknown) {
+            toast.error((err as { message?: string })?.message || "Failed to delete employee");
+        }
     };
 
     if (loading) {
@@ -166,7 +151,7 @@ export default function EmployeesTable() {
 
                     <Table>
                         {/* Table Header */}
-                        <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+                        <TableHeader className="border-b border-gray-100  dark:border-white/[0.05]">
                             <TableRow>
                                 <TableCell
                                     isHeader
@@ -290,6 +275,32 @@ export default function EmployeesTable() {
                     </div>
                 </div>
             </div>
+            <Popup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                title={
+                    popupMode === "add"
+                        ? "Add New Employee"
+                        : popupMode === "edit"
+                            ? "Edit Employee"
+                            : "View Employee"
+                }
+            >
+                <EmployeeForm
+                    mode={popupMode}
+                    empId={selectedEmployee?.id}
+                />
+            </Popup>
+
+            <DeleteConfirmation
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
+                onConfirm={confirmDelete}
+                itemName={selectedEmployee?.user.name}
+            />
+
+
+
         </div>
     );
 }

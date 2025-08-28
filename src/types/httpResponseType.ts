@@ -1,3 +1,5 @@
+
+
 // User Types
 export interface User {
   id: string;
@@ -21,13 +23,21 @@ export interface AuthData {
 
 //Normal Employees
 export interface NormalEmployee  {
+  email: string;
+  name: string;
+  message: string;
+  success: unknown;
   id: string;
   userId: string;
   departmentId: number;
   position: string;
   createdAt: string;
   updatedAt: string;
+  imageUrl: string;
+  password: string;
+  gender: string;
   user: {
+    gender: string;
     name: string;
     email: string;
   };
@@ -36,10 +46,70 @@ export interface NormalEmployee  {
   };
 }
 
+export interface EditEmployees {
+    email: string;
+    name: string;
+    message: string;
+    success: unknown;
+    id: string;
+    userId: string;
+    departmentId: number;
+    position: string;
+    createdAt: string;
+    updatedAt: string;
+    imageUrl: string;
+    gender: string;
+    user: {
+        gender: string;
+        name: string;
+        email: string;
+    };
+    department: {
+        name: string;
+    };
+}
+
+export interface TableEmployee {
+    id: string;
+    user: {
+        image: string;
+        name: string;
+        role: string;
+        email: string;
+    };
+    department: {
+        name: string;
+    };
+    position: string;
+}
+
+export interface userEmp  {
+   role: string;
+    imageUrl: string;
+    name: string;
+    email: string;
+    position: string;
+    departmentId: number;
+    gender: "male" | "female" | "other";
+    password: string;
+}
+
+export interface EdituserEmp  { 
+    id: string;
+    userId: string;
+    departmentId: number;
+    position: string;
+    user: {
+        name: string;
+        email: string;
+        gender: "male" | "female" | "other";
+    };
+
+}
 
 // Department Types
 export interface DepartmentAttributes {
-  id: string;
+  id: number;
   name: string;
   totalemp: number;
   createdAt?: Date;
@@ -80,6 +150,58 @@ export interface MgmtEmployeeAttributes {
   position: string;
   createdAt?: Date;
   updatedAt?: Date;
+}
+export interface ManagerResponse {
+  email: string;
+  name: string;
+  message: string;
+  success: unknown;
+  id: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  position: string;
+  password: string;
+  user: {
+    name: string;
+    email: string;
+    imageUrl: string;
+    gender: "male" | "female" | "other";
+  };
+  
+}
+
+export interface userManager {
+     role: string;
+    imageUrl: string;
+    name: string;
+    email: string;
+    position: string;
+    gender: "male" | "female" | "other";
+    password: string;
+}
+
+export interface EditManager{
+  id: string;
+    userId: string;
+    position: string;
+    user: {
+        name: string;
+        email: string;
+        gender: "male" | "female" | "other";
+        imageUrl: string;
+    };
+}
+
+export interface TableManager {
+    id: string;
+    user: {
+        image: string;
+        name: string;
+        role: string;
+        email: string;
+    };
+    position: string;
 }
 
 // Normal Employee Types
@@ -143,11 +265,73 @@ export interface OrderItemAttributes {
 export interface SupplierAttributes {
   id: string;
   name: string;
-  contactEmail?: string;
-  contactPhone?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface SupplierResponse  {
+  email: string;
+  name: string;
+  message: string;
+  success: unknown;
+  id: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  phone: string;
+  foodType: "breakfast" | "lunch" | "dinner" | "snacks" | "beverages";
+  password: string;
+  user: {
+    name: string;
+    email: string;
+    imageUrl: string;
+  };
+  
+}
+
+export interface userSupplier  {
+   role: string;
+    imageUrl: string;
+    name: string;
+    email: string;
+    phone: string;
+    foodType: "breakfast" | "lunch" | "dinner" | "snacks" | "beverages";
+    address: string;
+    gender: "male" | "female" | "other";
+    password: string;
+}
+
+export interface TableSupplier {
+    id: string;
+    foodType: "breakfast" | "lunch" | "dinner" | "snacks" | "beverages";
+    phone:string;
+    user: {
+        image: string;
+        name: string;
+        email: string;
+    };
+   
+}
+
+
+export interface EditSupplier {
+    [x: string]: unknown;
+    id: string;
+    userId: string;
+    foodType: "breakfast" | "lunch" | "dinner" | "snacks" | "beverages";
+    phone: string;
+    address: string;
+    user: {
+        name: string;
+        email: string;
+        gender: "male" | "female" | "other";
+    };
+}
+
+
 
 // Generic Response Types
 export interface MetaData {

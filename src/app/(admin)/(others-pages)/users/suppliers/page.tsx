@@ -1,6 +1,7 @@
-import ComponentCard from "@/components/common/ComponentCard";
+"use client"
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import SuppliersTable from "@/sections/suppliers/SuppliersTable";
+import SupplierpageContent from "@/sections/suppliers/SupplierpageConten";
+
 import React from "react";
 
 
@@ -10,9 +11,7 @@ export default function SuppliersPage() {
         <div>
             <PageBreadcrumb pageTitle="Suppliers" />
             <div className="space-y-6">
-                <ComponentCard title="Supplier Table">
-                    <SuppliersTable />
-                </ComponentCard>
+                <SupplierpageContent />
             </div>
         </div>
     );

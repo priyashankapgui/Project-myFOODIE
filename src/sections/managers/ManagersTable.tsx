@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
     Table,
     TableBody,
@@ -6,112 +7,134 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
-import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
+import Pagination from "@/components/tables/Pagination";
+import Button from "@/components/ui/button/Button";
+import { FiTrash, FiEye, FiEdit } from "react-icons/fi";
+import { getAllManagers, deleteManager } from "@/api/managerApis"; // Create these APIs
+import { ManagerResponse, TableManager } from "@/types/httpResponseType"; // Create this type
+import Popup from "@/components/ui/popup/Popup";
+import ManagerForm from "@/sections/managers/ManagerForm"; // Create this component
+import DeleteConfirmation from "@/components/common/DeleteConfirmation";
+import { toast } from "react-toastify";
 
-interface Order {
-    id: number;
-    user: {
-        image: string;
-        name: string;
-        role: string;
+const DEFAULT_USER_IMAGE = "/images/user/default-user.jpg";
+type PopupMode = "add" | "edit" | "view";
+
+export default function ManagersTable() {
+    const [managers, setManagers] = useState<TableManager[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [popupMode, setPopupMode] = useState<PopupMode>("add");
+    const [selectedManager, setSelectedManager] = useState<TableManager | undefined>(undefined);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+    useEffect(() => {
+        fetchManagers();
+    }, []);
+
+    const fetchManagers = async () => {
+        try {
+            setLoading(true);
+            const apiManagers: ManagerResponse[] = (await getAllManagers()) ?? [];
+
+            // Transform API data to match table structure
+            const transformedManagers: TableManager[] = apiManagers.map(mgr => ({
+                id: mgr.id,
+                user: {
+                    image: DEFAULT_USER_IMAGE,
+                    name: mgr.user.name,
+                    role: mgr.position, // Add role property
+                    email: mgr.user.email
+                },
+                position: mgr.position,
+            }));
+
+            setManagers(transformedManagers);
+            setError(null);
+        } catch (err) {
+            setError("Failed to fetch managers. Please try again.");
+            console.error("Error fetching managers:", err);
+        } finally {
+            setLoading(false);
+        }
     };
-    projectName: string;
-    team: {
-        images: string[];
+
+    const totalPages = Math.ceil(managers.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentItems = managers.slice(startIndex, startIndex + itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
-    status: string;
-    budget: string;
-}
 
-// Define the table data using the interface
-const tableData: Order[] = [
-    {
-        id: 1,
-        user: {
-            image: "/images/user/user-17.jpg",
-            name: "Lindsey Curtis",
-            role: "Web Designer",
-        },
-        projectName: "Agency Website",
-        team: {
-            images: [
-                "/images/user/user-22.jpg",
-                "/images/user/user-23.jpg",
-                "/images/user/user-24.jpg",
-            ],
-        },
-        budget: "3.9K",
-        status: "Active",
-    },
-    {
-        id: 2,
-        user: {
-            image: "/images/user/user-18.jpg",
-            name: "Kaiya George",
-            role: "Project Manager",
-        },
-        projectName: "Technology",
-        team: {
-            images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
-        },
-        budget: "24.9K",
-        status: "Pending",
-    },
-    {
-        id: 3,
-        user: {
-            image: "/images/user/user-17.jpg",
-            name: "Zain Geidt",
-            role: "Content Writing",
-        },
-        projectName: "Blog Writing",
-        team: {
-            images: ["/images/user/user-27.jpg"],
-        },
-        budget: "12.7K",
-        status: "Active",
-    },
-    {
-        id: 4,
-        user: {
-            image: "/images/user/user-20.jpg",
-            name: "Abram Schleifer",
-            role: "Digital Marketer",
-        },
-        projectName: "Social Media",
-        team: {
-            images: [
-                "/images/user/user-28.jpg",
-                "/images/user/user-29.jpg",
-                "/images/user/user-30.jpg",
-            ],
-        },
-        budget: "2.8K",
-        status: "Cancel",
-    },
-    {
-        id: 5,
-        user: {
-            image: "/images/user/user-21.jpg",
-            name: "Carla George",
-            role: "Front-end Developer",
-        },
-        projectName: "Website",
-        team: {
-            images: [
-                "/images/user/user-31.jpg",
-                "/images/user/user-32.jpg",
-                "/images/user/user-33.jpg",
-            ],
-        },
-        budget: "4.5K",
-        status: "Active",
-    },
-];
+    const handleEdit = (id: string) => {
+        setPopupMode("edit");
+        const manager = managers.find(mgr => mgr.id === id);
+        setSelectedManager(manager);
+        setIsPopupOpen(true);
+    };
 
-export default function EmployeesTable() {
+    const handleView = (id: string) => {
+        setPopupMode("view");
+        const manager = managers.find(mgr => mgr.id === id);
+        setSelectedManager(manager);
+        setIsPopupOpen(true);
+    };
+
+    const handleDelete = (id: string) => {
+        const manager = managers.find(mgr => mgr.id === id);
+        if (manager) {
+            setSelectedManager(manager);
+            setIsDeleteOpen(true);
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (!selectedManager) return;
+        try {
+            console.log("Deleting manager with ID:", selectedManager.id);
+            await deleteManager(selectedManager.id);
+            toast.success("Manager deleted successfully!");
+            fetchManagers(); // refresh table
+        } catch (err: unknown) {
+            toast.error((err as { message?: string })?.message || "Failed to delete manager");
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] p-6">
+                <div className="text-center text-gray-500 dark:text-gray-400">
+                    Loading managers...
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] p-6">
+                <div className="text-center text-red-500 dark:text-red-400">
+                    {error}
+                </div>
+            </div>
+        );
+    }
+
+    if (managers.length === 0) {
+        return (
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03] p-6">
+                <div className="text-center text-gray-500 dark:text-gray-400">
+                    No managers found.
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
             <div className="max-w-full overflow-x-auto">
@@ -124,103 +147,135 @@ export default function EmployeesTable() {
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                 >
+                                    ID
+                                </TableCell>
+                                <TableCell
+                                    isHeader
+                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                                >
                                     User
                                 </TableCell>
                                 <TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                 >
-                                    Project Name
+                                    Position
                                 </TableCell>
                                 <TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                 >
-                                    Team
-                                </TableCell>
-                                <TableCell
-                                    isHeader
-                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                >
-                                    Status
-                                </TableCell>
-                                <TableCell
-                                    isHeader
-                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                >
-                                    Budget
+                                    Actions
                                 </TableCell>
                             </TableRow>
                         </TableHeader>
 
                         {/* Table Body */}
                         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                            {tableData.map((order) => (
-                                <TableRow key={order.id}>
+                            {currentItems.map((manager) => (
+                                <TableRow key={manager.id}>
+                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                        {manager.id}
+                                    </TableCell>
+
                                     <TableCell className="px-5 py-4 sm:px-6 text-start">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 overflow-hidden rounded-full">
                                                 <Image
                                                     width={40}
                                                     height={40}
-                                                    src={order.user.image}
-                                                    alt={order.user.name}
+                                                    src={manager.user.image || DEFAULT_USER_IMAGE}
+                                                    alt={manager.user.name}
+                                                    className="object-cover"
+                                                    onError={(e) => {
+                                                        const target = e.target as HTMLImageElement;
+                                                        target.src = DEFAULT_USER_IMAGE;
+                                                    }}
                                                 />
+
                                             </div>
                                             <div>
                                                 <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                                    {order.user.name}
+                                                    {manager.user.name}
                                                 </span>
                                                 <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                                                    {order.user.role}
+                                                    {manager.user.email}
                                                 </span>
                                             </div>
                                         </div>
                                     </TableCell>
                                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        {order.projectName}
+                                        {manager.position}
                                     </TableCell>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        <div className="flex -space-x-2">
-                                            {order.team.images.map((teamImage, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                                                >
-                                                    <Image
-                                                        width={24}
-                                                        height={24}
-                                                        src={teamImage}
-                                                        alt={`Team member ${index + 1}`}
-                                                        className="w-full"
-                                                    />
-                                                </div>
-                                            ))}
+                                    {/* Actions Column with Button Component */}
+                                    <TableCell className="px-4 py-3 text-start">
+                                        <div className="flex items-center gap-2">
+                                            {/* View Button */}
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => handleView(manager.id)}
+                                                className="p-1 border-transparent text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                                            >
+                                                <FiEye size={16} />
+                                            </Button>
+                                            {/* Edit Button */}
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => handleEdit(manager.id)}
+                                            >
+                                                <FiEdit size={16} />
+                                            </Button>
+                                            {/* Delete Button */}
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => handleDelete(manager.id)}
+                                                className="text-red-600 hover:text-red-700 hover:border-red-200 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20"
+                                            >
+                                                <FiTrash size={16} />
+                                            </Button>
                                         </div>
-                                    </TableCell>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                        <Badge
-                                            size="sm"
-                                            color={
-                                                order.status === "Active"
-                                                    ? "success"
-                                                    : order.status === "Pending"
-                                                        ? "warning"
-                                                        : "error"
-                                            }
-                                        >
-                                            {order.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {order.budget}
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+
+                    {/* Pagination Component */}
+                    <div className="px-6 py-4 border-t border-gray-100 dark:border-white/[0.05]">
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             </div>
+            <Popup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                title={
+                    popupMode === "add"
+                        ? "Add New Manager"
+                        : popupMode === "edit"
+                            ? "Edit Manager"
+                            : "View Manager"
+                }
+            >
+                <ManagerForm
+                    mode={popupMode}
+                    managerId={selectedManager?.id}
+                />
+            </Popup>
+
+            <DeleteConfirmation
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
+                onConfirm={confirmDelete}
+                itemName={selectedManager?.user.name}
+            />
         </div>
     );
 }

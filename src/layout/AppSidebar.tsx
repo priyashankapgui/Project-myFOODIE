@@ -63,7 +63,11 @@ const navItems: NavItem[] = [
   {
     icon: < FiLayers size={20} />,
     name: "Complaints",
-    path: "/complaints",
+    subItems: [
+      { name: "Form", path: "/complaints" },
+      { name: "View", path: "/complaints/view" },
+
+    ],
   },
   {
     icon: <FiUser size={20} />,
