@@ -122,9 +122,15 @@ export interface FeedbackAttributes {
   userId: string;
   supplierId: string;
   comment?: string;
-  rating?: number;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface ComplainsAttributes {
+  userId: string;
+  supplierId: string;
+  comment: string;
+  feedbackDate: Date;
 }
 
 // Food Item Types
