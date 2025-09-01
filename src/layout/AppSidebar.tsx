@@ -1,149 +1,152 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import { getLocalUser } from "@/store/local_storage";
 import {
   FiGrid,
   FiChevronDown,
-  FiList,
-  FiPieChart,
   FiBox,
-  FiPlus,
   FiMoreHorizontal,
   FiCoffee,
   FiShoppingBag,
   FiUsers,
-  FiFile,
   FiLayers,
   FiBriefcase,
-  FiDollarSign
 } from "react-icons/fi";
+
+// Define user roles
+type UserRole = | "management" | "supplier" | "normalEmployee";
+
+
+
+
+
+type SubItem = {
+  name: string;
+  path: string;
+  pro?: boolean;
+  new?: boolean;
+  allowedRoles?: UserRole[];
+};
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: SubItem[];
+  allowedRoles?: UserRole[];
 };
-
 
 const navItems: NavItem[] = [
   {
     icon: <FiGrid size={20} />,
     name: "Dashboard",
     path: "/dashboard",
+    allowedRoles: ["management", "supplier", "normalEmployee"],
   },
   {
     icon: <FiCoffee size={20} />,
     name: "Today Special",
     path: "/today-special",
+    allowedRoles: ["management", "supplier", "normalEmployee"],
   },
   {
     icon: <FiBox size={20} />,
     name: "Food Items",
     path: "/food-items",
+    allowedRoles: ["management", "supplier", "normalEmployee"],
   },
   {
     icon: <FiShoppingBag size={20} />,
     name: "My Orders",
     path: "/orders",
-
+    allowedRoles: ["management", "supplier", "normalEmployee"],
   },
   {
     icon: <FiUsers size={20} />,
     name: "Users",
+    allowedRoles: ["management"],
     subItems: [
       { name: "Employees", path: "/users/employees" },
       { name: "Suppliers", path: "/users/suppliers" },
       { name: "Managers", path: "/users/managers" },
-
     ],
   },
   {
-    icon: < FiLayers size={20} />,
+    icon: <FiLayers size={20} />,
     name: "Complaints",
+    allowedRoles: ["management", "normalEmployee", "supplier"],
     subItems: [
-      { name: "Complaint Form", path: "/complaints" },
-      { name: "Complaint View", path: "/complaints/view" },
-
+      {
+        name: "Complaint Form",
+        path: "/complaints",
+        allowedRoles: ["management", "normalEmployee"]
+      },
+      {
+        name: "Complaint View",
+        path: "/complaints/view",
+        allowedRoles: ["management", "supplier"]
+      },
     ],
   },
   {
     icon: <FiBriefcase size={20} />,
     name: "Departments",
     path: "/departments",
-  },
-  {
-    icon: <FiDollarSign size={20} />,
-    name: "Transactions",
-    path: "/transactions",
-  },
-  {
-    name: "Forms",
-    icon: <FiList size={20} />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <FiLayers size={20} />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <FiFile size={20} />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
+    allowedRoles: ["management"],
   },
 ];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <FiPieChart />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <FiBox />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <FiPlus />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
-];
-
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const [userRole, setUserRole] = useState<UserRole | "">("");
+  const [filteredNavItems, setFilteredNavItems] = useState<NavItem[]>([]);
+
+  // Get user role on component mount
+  useEffect(() => {
+    const user = getLocalUser();
+    setUserRole(user.role);
+
+    // Filter navigation items based on user role
+    const filteredItems = navItems.filter(item => {
+      // If no allowedRoles specified, show to everyone
+      if (!item.allowedRoles) return true;
+
+      // Check if user's role is in the allowedRoles array
+      return item.allowedRoles.includes(user.role);
+    }).map(item => {
+      // If item has subItems, filter them too
+      if (item.subItems) {
+        return {
+          ...item,
+          subItems: item.subItems.filter(subItem => {
+            // If no allowedRoles specified, show to everyone
+            if (!subItem.allowedRoles) return true;
+
+            // Check if user's role is in the allowedRoles array
+            return subItem.allowedRoles.includes(user.role);
+          })
+        };
+      }
+      return item;
+    });
+
+    setFilteredNavItems(filteredItems);
+  }, []);
 
   const renderMenuItems = (
     navItems: NavItem[],
-    menuType: "main" | "others"
+    menuType: "main"
   ) => (
     <ul className="flex flex-col gap-4">
       {navItems.map((nav, index) => (
         <li key={nav.name}>
-          {nav.subItems ? (
+          {nav.subItems && nav.subItems.length > 0 ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
               className={`menu-item group  ${openSubmenu?.type === menuType && openSubmenu?.index === index
@@ -196,7 +199,7 @@ const AppSidebar: React.FC = () => {
               </Link>
             )
           )}
-          {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
+          {nav.subItems && nav.subItems.length > 0 && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => {
                 subMenuRefs.current[`${menuType}-${index}`] = el;
@@ -254,7 +257,7 @@ const AppSidebar: React.FC = () => {
   );
 
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
+    type: "main";
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
@@ -263,30 +266,6 @@ const AppSidebar: React.FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
-
-  useEffect(() => {
-    let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navItems : othersItems;
-      items.forEach((nav, index) => {
-        if (nav.subItems) {
-          nav.subItems.forEach((subItem) => {
-            if (isActive(subItem.path)) {
-              setOpenSubmenu({
-                type: menuType as "main" | "others",
-                index,
-              });
-              submenuMatched = true;
-            }
-          });
-        }
-      });
-    });
-
-    if (!submenuMatched) {
-      setOpenSubmenu(null);
-    }
-  }, [pathname, isActive]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -300,7 +279,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+  const handleSubmenuToggle = (index: number, menuType: "main") => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
@@ -334,24 +313,11 @@ const AppSidebar: React.FC = () => {
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
-              <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <Image
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
+              <h1 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/80 ">MyFOODIE</h1>
             </>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/logo.svg"
               alt="Logo"
               width={32}
               height={32}
@@ -375,23 +341,7 @@ const AppSidebar: React.FC = () => {
                   <FiMoreHorizontal />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
-            </div>
-
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
-                  ? "lg:justify-center"
-                  : "justify-start"
-                  }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <FiMoreHorizontal />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
+              {renderMenuItems(filteredNavItems, "main")}
             </div>
           </div>
         </nav>

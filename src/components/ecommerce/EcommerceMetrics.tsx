@@ -33,7 +33,7 @@ export const EcommerceMetrics = () => {
         // Get current year and month
         const currentDate = new Date();
         const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1; // JavaScript months are 0-indexed
+        const month = currentDate.getMonth() + 1;
 
         let response;
 
@@ -42,7 +42,7 @@ export const EcommerceMetrics = () => {
           // Fetch supplier-specific monthly order data
           response = await getSupplierMonthlyOrder(userId, year, month);
         } else if (role === "management") {
-          // Fetch all monthly order summary for manager
+          // Fetch all monthly order summary for management
           response = await getAllMonthlyOrderSummary();
         } else {
           toast.error("Unauthorized role");
