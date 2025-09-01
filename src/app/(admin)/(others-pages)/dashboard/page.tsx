@@ -7,8 +7,8 @@ import LottieAnimation from "@/components/common/LottieAnimation";
 
 export const metadata: Metadata = {
   title:
-    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+    "My Foodie Dashboard",
+  description: "This is My Foodie Dashboard",
 };
 
 
