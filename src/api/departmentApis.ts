@@ -1,5 +1,6 @@
 import axiosAuth from "@/lib/axiosAuth";
-import { DepartmentAttributes } from "@/types/httpResponseType";
+import { DepartmentAttributes,DepartmentEdit } from "@/types/httpResponseType";
+import { toast } from "react-toastify";
 
 
 export const getDepartments = async () => {
@@ -8,16 +9,52 @@ export const getDepartments = async () => {
     return res;
 };
 
-export const createDepartment = async (data: DepartmentAttributes): Promise<DepartmentAttributes> => {
-    const response = await axiosAuth.post("/departments", data);
-    return response.data;
+export const createDepartment = async (data: DepartmentEdit) => {
+    try{
+        console.log("Creating Department:👨🏽‍💻",  data);
+    const res: DepartmentAttributes = await axiosAuth.post("/departments", data);
+    console.log("Created Department:🚀",  res);
+    toast.success("Department created successfully");
+    return res;
+    }catch{
+        toast.error("Failed to create department");
+    }
 };
 
-export const updateDepartment = async (id: string, data: DepartmentAttributes): Promise<DepartmentAttributes> => {
-    const response = await axiosAuth.put(`/departments/${id}`, data);
-    return response.data;
+export const getDepartmentById = async (id: number) => {
+    try{
+    console.log("Fetching Department by ID:🚀",  id);
+    const res: DepartmentEdit = await axiosAuth.get(`/departments/${id}`);
+    console.log("Fetched Department:🚀",  res);
+    toast.success("Fetched department details successfully");
+    return res;
+    } catch{
+        toast.error("Failed to fetch department details");
+    }
 };
 
-export const deleteDepartment = async (id: string): Promise<void> => {
+export const updateDepartment = async (id: number, data: DepartmentEdit) => {
+    try{
+    console.log("Updating Department:🚀",  { id, data });
+    const res: DepartmentEdit = await axiosAuth.put(`/departments/${id}`, data);
+    console.log("Updated Department:🚀",  res);
+    toast.success("Department updated successfully");
+    return res;
+    }catch{
+        toast.error("Failed to update department");
+    }
+};
+
+
+
+
+
+export const deleteDepartment = async (id: number) => {
+    try{
+    console.log("Deleting Department:🚀",  id);
     await axiosAuth.delete(`/departments/${id}`);
+    toast.success("Department deleted successfully");
+    }catch{
+        toast.error("Failed to delete department");
+    }
 };

@@ -8,7 +8,9 @@ import { ChevronDownIcon } from "@/icons/";
 import Button from "@/components/ui/button/Button";
 import { getManagerById, updateManager } from "@/api/managerApis"; // Create these APIs
 import { useRouter } from "next/navigation";
-import { editManagerSchema, EditManagerFormData } from "@/validation/manager"; // Create this validation
+import { editManagerSchema, EditManagerFormData } from "@/validation/manager";
+import { DepartmentAttributes, NormalEmployee } from "@/types/httpResponseType";
+import { getDepartments } from "@/api/departmentApis";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -21,16 +23,34 @@ type ManagerFormProps = {
 export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [departments, setDepartments] = useState<DepartmentAttributes[]>([]);
     const [formData, setFormData] = useState<EditManagerFormData>({
         name: "",
         email: "",
         gender: "male",
         position: "",
+        departmentId: 0,
     });
 
     const [userId, setUserId] = useState<string>("");
     const router = useRouter();
     const isReadOnly = mode === "view";
+
+    // fetch departments
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                setLoading(true);
+                const data = await getDepartments();
+                setDepartments(data ?? []);
+            } catch (err) {
+                setError("Failed to load departments");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDepartments();
+    }, []);
 
     // fetch manager data if editing or viewing
     useEffect(() => {
@@ -46,6 +66,7 @@ export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormPr
                                 ? (manager.user.gender as "male" | "female" | "other")
                                 : "male",
                             position: manager.position ?? "",
+                            departmentId: manager.departmentId ?? 0,
                         });
 
                         setUserId(manager.userId ?? "");
@@ -62,7 +83,12 @@ export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormPr
         fetchManager();
     }, [mode, managerId]);
 
-    const handleChange = (field: keyof EditManagerFormData, value: string) => {
+    const departmentOptions = (departments ?? []).map((department) => ({
+        value: department.id.toString(),
+        label: department.name,
+    }));
+
+    const handleChange = (field: keyof EditManagerFormData, value: string | number) => {
         if (isReadOnly) return;
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -79,6 +105,7 @@ export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormPr
                     id: managerId,
                     userId: userId,
                     position: validatedData.position,
+                    departmentId: validatedData.departmentId,
                     user: {
                         name: validatedData.name,
                         email: validatedData.email,
@@ -140,27 +167,49 @@ export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormPr
                         disabled={isReadOnly}
                     />
                 </div>
-            </div>
-
-            {/* Gender */}
-            <div>
-                <Label htmlFor="gender">Gender</Label>
-                <div className="relative">
-                    <Select
-                        options={[
-                            { value: "male", label: "Male" },
-                            { value: "female", label: "Female" },
-                            { value: "other", label: "Other" },
-                        ]}
-                        placeholder="Select Gender"
-                        onChange={(value) => handleChange("gender", value)}
-                        value={formData.gender}
-                        className="dark:bg-dark-900"
-                        disabled={isReadOnly}
-                    />
-                    <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                        <ChevronDownIcon />
-                    </span>
+                <div>
+                    <Label htmlFor="gender">Gender</Label>
+                    <div className="relative">
+                        <Select
+                            options={[
+                                { value: "male", label: "Male" },
+                                { value: "female", label: "Female" },
+                                { value: "other", label: "Other" },
+                            ]}
+                            placeholder="Select Gender"
+                            onChange={(value) => handleChange("gender", value)}
+                            value={formData.gender}
+                            className="dark:bg-dark-900"
+                            disabled={isReadOnly}
+                        />
+                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                            <ChevronDownIcon />
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <Label>Select Department</Label>
+                    <div className="relative">
+                        {loading ? (
+                            <div className="p-2 text-gray-500">Loading departments...</div>
+                        ) : error ? (
+                            <div className="p-2 text-red-500">{error}</div>
+                        ) : (
+                            <>
+                                <Select
+                                    options={departmentOptions}
+                                    placeholder="Select a department"
+                                    onChange={(value) => handleChange("departmentId", parseInt(value))}
+                                    value={formData.departmentId.toString()}
+                                    className="dark:bg-dark-900"
+                                    disabled={isReadOnly}
+                                />
+                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                    <ChevronDownIcon />
+                                </span>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 

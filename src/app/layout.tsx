@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import AuthGuard from '@/components/auth/AuthGarde';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import HydrationFix from '@/components/HydrationFix/HydrationFix';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.className} dark:bg-gray-900`}>
-
+        <HydrationFix />
         <ThemeProvider>
           <SidebarProvider>
             <AuthGuard>

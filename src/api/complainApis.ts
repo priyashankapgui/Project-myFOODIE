@@ -1,5 +1,5 @@
  import axiosAuth from "@/lib/axiosAuth";
-import {ComplainsAttributes} from "@/types/httpResponseType";
+import {ComplainsAttributes ,ComplainsgetByID} from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
 
@@ -26,7 +26,7 @@ export const createComplain = async (data: ComplainsAttributes) => {
 
 export const getComplainById = async (id: string) => {
     try{
-    const res: ComplainsAttributes = await axiosAuth.get(`/feedbacks/${id}`);
+    const res: ComplainsgetByID = await axiosAuth.get(`/feedbacks/${id}`);
     console.log("Complain Details:🚀",  res);
     return res;
     }catch{
@@ -36,7 +36,7 @@ export const getComplainById = async (id: string) => {
 
 export const getComplainBySupplierId = async (supplierId: string) => {
     try{
-    const res: ComplainsAttributes[] = await axiosAuth.get(`/feedbacks/${supplierId}`);
+    const res: ComplainsAttributes[] = await axiosAuth.get(`/feedbacks/getbysupplierId/${supplierId}`);
     console.log("Complains by Supplier ID:🚀",  res);
     return res;
     }catch{

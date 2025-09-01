@@ -6,10 +6,8 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   FiGrid,
-  FiCalendar,
   FiChevronDown,
   FiList,
-  FiUser,
   FiPieChart,
   FiBox,
   FiPlus,
@@ -18,7 +16,9 @@ import {
   FiShoppingBag,
   FiUsers,
   FiFile,
-  FiLayers
+  FiLayers,
+  FiBriefcase,
+  FiDollarSign
 } from "react-icons/fi";
 
 type NavItem = {
@@ -33,12 +33,7 @@ const navItems: NavItem[] = [
   {
     icon: <FiGrid size={20} />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  {
-    icon: <FiCalendar size={20} />,
-    name: "Calendar",
-    path: "/calendar",
+    path: "/dashboard",
   },
   {
     icon: <FiCoffee size={20} />,
@@ -46,9 +41,15 @@ const navItems: NavItem[] = [
     path: "/today-special",
   },
   {
+    icon: <FiBox size={20} />,
+    name: "Food Items",
+    path: "/food-items",
+  },
+  {
     icon: <FiShoppingBag size={20} />,
     name: "My Orders",
     path: "/orders",
+
   },
   {
     icon: <FiUsers size={20} />,
@@ -64,15 +65,20 @@ const navItems: NavItem[] = [
     icon: < FiLayers size={20} />,
     name: "Complaints",
     subItems: [
-      { name: "Form", path: "/complaints" },
-      { name: "View", path: "/complaints/view" },
+      { name: "Complaint Form", path: "/complaints" },
+      { name: "Complaint View", path: "/complaints/view" },
 
     ],
   },
   {
-    icon: <FiUser size={20} />,
-    name: "User Profile",
-    path: "/profile",
+    icon: <FiBriefcase size={20} />,
+    name: "Departments",
+    path: "/departments",
+  },
+  {
+    icon: <FiDollarSign size={20} />,
+    name: "Transactions",
+    path: "/transactions",
   },
   {
     name: "Forms",

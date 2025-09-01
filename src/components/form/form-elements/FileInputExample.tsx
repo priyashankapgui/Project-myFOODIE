@@ -5,6 +5,7 @@ import FileInput from "../input/FileInput";
 import Label from "../Label";
 
 export default function FileInputExample() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -13,10 +14,10 @@ export default function FileInputExample() {
   };
 
   return (
-    <ComponentCard title="File Input">
+    <ComponentCard title="">
       <div>
         <Label>Upload file</Label>
-        <FileInput onChange={handleFileChange} className="custom-class" />
+        <FileInput multiple className="custom-class" />
       </div>
     </ComponentCard>
   );

@@ -9,6 +9,16 @@ export interface User {
   roleId: string;
 }
 
+export interface Userdep {
+  departmentId: number;
+  users: {
+    id: string;
+    name: string;
+  }[];
+}
+
+
+
 export interface AuthData {
   token: string;
     user: {
@@ -116,6 +126,18 @@ export interface DepartmentAttributes {
   updatedAt?: Date;
 }
 
+export interface Department {
+  id: number;
+  name: string;
+  totalemp: number;
+  
+}
+
+export interface DepartmentEdit {
+  name: string;
+  totalemp: number;
+}
+
 // Feedback Types
 export interface FeedbackAttributes {
   id?: number;
@@ -127,11 +149,43 @@ export interface FeedbackAttributes {
 }
 
 export interface ComplainsAttributes {
+  id?:number
   userId: string;
   supplierId: string;
   comment: string;
   feedbackDate: Date;
 }
+
+export interface ComplainsgetByID  {
+    id: number;
+    userId: string;
+    feedbackDate: string;
+    supplierId: string;
+    comment: string;
+    createdAt: string;
+    updatedAt: string;
+    supplier: {
+        id: string;
+        userId: string;
+        foodType: string;
+        address: string;
+        phone: string;
+        createdAt: string;
+        updatedAt: string;
+        user: {
+            id: string;
+            name: string;
+        };
+    };
+}
+
+
+export interface getAllSuppliersResponse {
+   id: string;
+    user: {
+        name: string;
+    };
+  }
 
 // Food Item Types
 export interface FoodItemAttributes {
@@ -149,6 +203,55 @@ export interface FoodItemAttributes {
   updatedAt?: Date;
 }
 
+export interface FoodItems {
+  id?: number;
+  name: string;
+  description?: string;
+  supplierId: string;
+  price: number;
+  employeeprice: number;
+  hospitalprice: number;
+  category: string;
+  imageUrl?: string;
+  available: boolean;
+}
+
+export interface FoodItemEdit {
+   id?: number;
+  name: string;
+  description?: string;
+  category: string;
+  imageUrl?: string;
+  available: boolean;
+}
+
+export interface TodaySpecial {
+  id : number;
+  name: string;
+  description: string;
+  supplierId: string;
+  price: number;
+  employeeprice: number;
+  hospitalprice: number;
+  category: string;
+  imageUrl: string;
+  available: boolean;
+  createdAt: string;
+  updatedAt: string;
+  supplier: {
+    id: string;
+    foodType: string;
+    address: string;
+    phone: string;
+  };
+  user?: {
+    id: string;
+    name: string;
+  }
+  supplierName?: string;
+}
+
+ 
 // Management Employee Types
 export interface MgmtEmployeeAttributes {
   id?: string;
@@ -156,6 +259,7 @@ export interface MgmtEmployeeAttributes {
   position: string;
   createdAt?: Date;
   updatedAt?: Date;
+  departmentId?: number;
 }
 export interface ManagerResponse {
   email: string;
@@ -168,6 +272,7 @@ export interface ManagerResponse {
   updatedAt: string;
   position: string;
   password: string;
+  departmentId: number;
   user: {
     name: string;
     email: string;
@@ -185,12 +290,14 @@ export interface userManager {
     position: string;
     gender: "male" | "female" | "other";
     password: string;
+    departmentId: number;
 }
 
 export interface EditManager{
   id: string;
     userId: string;
     position: string;
+    departmentId: number;
     user: {
         name: string;
         email: string;
@@ -222,24 +329,35 @@ export interface NormalEmployeeAttributes {
 
 // Order Types
 export interface OrderAttributes {
-  id?: string;
-  collectedByUserId: string;
-  orderCreatorUserId: string;
-  orderDate: Date;
-  departmentId: number;
-  totalRequestOrderItems: number;
-  totalPreparedOrderItems: number;
-  totalOrderPrice: number;
-  totalOrderEmployeePrice: number;
-  totalOrderHospitalPrice: number;
-  status: string;
-  mealType: string;
-  toBePaidHospitalPrice?: number;
-  toBePaidEmployeePrice?: number;
-  toBePaidTotalPrice?: number;
-  supplierId?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+ id?: string;
+ orderData: {
+   orderCreatorUserId: string;
+   status: string;
+   supplierId: string;
+ };
+ items: Array<{
+   foodItemId: number;
+   userId: string;
+   quantity: number;
+}>;
+}
+
+
+export interface ProfileDataResponse {
+  id: string;
+  name: string;
+  email: string;
+  gender: string;
+  imageUrl: string | null;
+  role: string;
+  phone?: string;
+  address?: string;
+  roleDetails?: {
+    id: string;
+    departmentId: number;
+    position: string;
+    departmentName: string;
+  };
 }
 
 export interface OrderTotals {

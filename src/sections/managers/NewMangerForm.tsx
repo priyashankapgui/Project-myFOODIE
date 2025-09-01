@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Select from "@/components/form/Select";
@@ -8,13 +9,17 @@ import Button from "@/components/ui/button/Button";
 import { useRouter } from "next/navigation";
 import { ManagerSchema, ManagerFormData } from "@/validation/manager"; // Create this
 import { createManager } from "@/api/managerApis";
+import { getDepartments } from "@/api/departmentApis";
 import { toast } from "react-toastify";
+import { DepartmentAttributes } from "@/types/httpResponseType";
 import { z } from "zod";
 
 
 export default function AddManagerForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [departments, setDepartments] = useState<DepartmentAttributes[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<ManagerFormData>({
         name: "",
         email: "",
@@ -22,11 +27,34 @@ export default function AddManagerForm() {
         gender: "male",
         position: "",
         role: "management",
+        departmentId: 0,
     });
 
     const router = useRouter();
 
-    const handleChange = (field: keyof ManagerFormData, value: string) => {
+    // fetch departments
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                setLoading(true);
+                const data = await getDepartments();
+                setDepartments(data ?? []);
+            } catch (err) {
+                setError("Failed to load departments");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDepartments();
+    }, []);
+
+    // options
+    const departmentOptions = (departments ?? []).map((department) => ({
+        value: department.id.toString(),
+        label: department.name,
+    }));
+
+    const handleChange = (field: keyof ManagerFormData, value: string | number) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -54,6 +82,7 @@ export default function AddManagerForm() {
                     gender: "male",
                     position: "",
                     role: "management",
+                    departmentId: 0,
                 });
                 router.push("/users/managers");
 
@@ -121,27 +150,52 @@ export default function AddManagerForm() {
                         </button>
                     </div>
                 </div>
+                <div>
+                    <Label htmlFor="gender">Gender</Label>
+                    <div className="relative">
+                        <Select
+                            options={[
+                                { value: "male", label: "Male" },
+                                { value: "female", label: "Female" },
+                                { value: "other", label: "Other" },
+                            ]}
+                            placeholder="Select Gender"
+                            onChange={(value) => handleChange("gender", value)}
+                            value={formData.gender}
+                            className="dark:bg-dark-900"
+                        />
+                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                            <ChevronDownIcon />
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <Label>Select Department</Label>
+                    <div className="relative">
+                        {loading ? (
+                            <div className="p-2 text-gray-500">Loading departments...</div>
+                        ) : error ? (
+                            <div className="p-2 text-red-500">{error}</div>
+                        ) : (
+                            <>
+                                <Select
+                                    options={departmentOptions}
+                                    placeholder="Select a department"
+                                    onChange={(value) => handleChange("departmentId", parseInt(value))}
+                                    value={formData.departmentId.toString()}
+                                    className="dark:bg-dark-900"
+                                    disabled={true}
+                                />
+                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                    <ChevronDownIcon />
+                                </span>
+                            </>
+                        )}
+                    </div>
+                </div>
+
             </div>
 
-            <div>
-                <Label htmlFor="gender">Gender</Label>
-                <div className="relative">
-                    <Select
-                        options={[
-                            { value: "male", label: "Male" },
-                            { value: "female", label: "Female" },
-                            { value: "other", label: "Other" },
-                        ]}
-                        placeholder="Select Gender"
-                        onChange={(value) => handleChange("gender", value)}
-                        value={formData.gender}
-                        className="dark:bg-dark-900"
-                    />
-                    <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                        <ChevronDownIcon />
-                    </span>
-                </div>
-            </div>
 
             <div className="flex flex-col sm:flex-row justify-end gap-4">
                 <Button variant="primary" type="submit" disabled={loading}>

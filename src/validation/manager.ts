@@ -9,6 +9,7 @@ export const ManagerSchema = z.object({
     position: z.string().min(2).max(100).nonempty({ message: "Please enter Employee Position" }),
     gender: z.enum(["male", "female", "other"]),
     role: z.enum(["management"]),
+    departmentId: z.number().min(1, { message: "Please select a department" }),
     password: z
     .string()
     .min(1, { message: "Password is required" })
@@ -25,6 +26,7 @@ export const editManagerSchema = z.object({
         .email({ message: "Please enter a valid email address" }),
     position: z.string().min(2).max(100).nonempty({ message: "Please enter Employee Position" }),
     gender: z.enum(["male", "female", "other"]),
+    departmentId: z.number().min(1, { message: "Please select a department" }),
 
   
 });

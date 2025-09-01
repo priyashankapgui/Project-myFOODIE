@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.14.3",
+    "@cloudinary/url-gen": "^1.22.0",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
@@ -25,6 +27,7 @@
     "axios": "^1.11.0",
     "flatpickr": "^4.6.13",
     "js-cookie": "^3.0.5",
+    "lottie-react": "^2.4.1",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",

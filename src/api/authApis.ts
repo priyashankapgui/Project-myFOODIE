@@ -1,9 +1,10 @@
 import axiosAuth from "@/lib/axiosAuth";
 import { AuthData } from "@/types/httpResponseType";
 import { setToken, setLocalUser, logoutUser } from "@/store/local_storage";
+import { ProfileDataResponse } from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-// LOGIN
+//* LOGIN
 export async function loginUser(email: string, password: string) {
   try {
     console.log("Logging in user with email:", email, password);
@@ -11,7 +12,6 @@ export async function loginUser(email: string, password: string) {
     const res: AuthData = await axiosAuth.post("/auth/login", { email, password });
 
     console.log("Login response:🚀", res);
-
     // store in localStorage
     setToken(res.token);
     setLocalUser(res.user);
@@ -25,7 +25,7 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-// LOGOUT
+//* LOGOUT
 export async function signOutUser( userId: string ) {
   try {
     const res: AuthData = await axiosAuth.post("/auth/logout", { userId });
@@ -43,4 +43,52 @@ export async function signOutUser( userId: string ) {
   }
 }
 
+//* Request the otp code
+export async function requestPasswordReset(email: string) {
+  try {
+    const res = await axiosAuth.post("/auth/forgot-password", { email });
+   
+    toast.success("Password reset email sent successfully!");
+    return res;
+  } catch (err: unknown) {
+    toast.error("Failed to send password reset email.");
+    throw err;
+  }
+}
 
+//* Change the  password with otp
+export async function  changePasswordwithOtp(email:string,password:string,otp:string) {
+  try {
+    const res = await axiosAuth.post("/auth/reset-password", { email,password,otp });
+    toast.success("Password reset successfully!");
+    return res;
+  } catch (err: unknown) {
+    toast.error("Failed to reset password.");
+    throw err;
+  }
+  
+}
+
+//* Get user profile data
+export async function getProfileData() {
+  try {
+    const res = await axiosAuth.get(`/auth/profile/`);
+    console.log("Profile data fetched successfully:🚀", res);
+    return res;
+  } catch (err: unknown) {
+    toast.error("Failed to fetch profile data.");
+    throw err;
+  }
+}
+
+//* Update user profile data
+export async function updateProfileData(data: ProfileDataResponse) {
+  try {
+    const res = await axiosAuth.put(`/auth/update-profile/`, data);
+    console.log("Profile data updated successfully:🚀", res.data);
+    return res.data;
+  } catch (err: unknown) {
+    toast.error("Failed to update profile data.");
+    throw err;
+  }
+}

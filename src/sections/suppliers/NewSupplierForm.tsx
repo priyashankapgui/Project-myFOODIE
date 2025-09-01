@@ -49,7 +49,7 @@ export default function NewSupplierForm({ onSuccess }: NewSupplierFormProps) {
             // Prepare payload with default values
             const payload = {
                 ...validatedData,
-                role: "supplyer",
+                role: "supplier",
                 imageUrl: "default-supplier-image.jpg",
             };
 

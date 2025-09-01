@@ -3,6 +3,7 @@ const USER = "USER";
 const TOKEN = "TOKEN";
 
 export const getLocalUser = () =>
+  
   JSON.parse(localStorage.getItem(USER) || "{}");
 
 export const setLocalUser = (user = {}) =>

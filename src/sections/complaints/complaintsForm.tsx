@@ -12,21 +12,9 @@ import { createComplain } from "@/api/complainApis";
 import { toast } from "react-toastify";
 import { getLocalUser } from "@/store/local_storage";
 import { FeedbackSchema } from "@/validation/feedback";
+import { ComplainsAttributes, getAllSuppliersResponse } from "@/types/httpResponseType";
 
-interface Supplier {
-    id: string;
-    user: {
-        name: string;
-    };
-}
 
-// Interface for form data that matches the Zod schema
-interface FeedbackFormData {
-    userId: string;
-    supplierId: string;
-    comment: string;
-    feedbackDate: Date;
-}
 
 export default function ComplaintForm() {
     const [supplierId, setSupplierId] = useState("");
@@ -35,7 +23,7 @@ export default function ComplaintForm() {
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [suppliers, setSuppliers] = useState<getAllSuppliersResponse[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     // Get userId from localStorage on component mount
@@ -73,7 +61,7 @@ export default function ComplaintForm() {
     }));
 
     // Validate form data using Zod schema
-    const validateForm = (formData: Partial<FeedbackFormData>) => {
+    const validateForm = (formData: Partial<ComplainsAttributes>) => {
         try {
             FeedbackSchema.parse(formData);
             setErrors({});
@@ -105,7 +93,7 @@ export default function ComplaintForm() {
         }
 
         // Prepare form data for validation
-        const formData: Partial<FeedbackFormData> = {
+        const formData: Partial<ComplainsAttributes> = {
             userId,
             supplierId,
             comment: message,
@@ -120,7 +108,6 @@ export default function ComplaintForm() {
         setLoading(true);
 
         try {
-            // Ensure we have a valid date
             const finalFeedbackDate = complaintDate || new Date();
 
             const feedbackData = {

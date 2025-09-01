@@ -19,7 +19,6 @@ axiosAuth.interceptors.request.use(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (config : any) => {
     const setLoading = useLoaderStore.getState().setLoading;
-    // Check if skipLoading is not true, then set loading
     if (!config?.skipLoading) {
       setLoading(true);
     }
@@ -64,7 +63,7 @@ axiosAuth.interceptors.response.use(
     } else if (status === 404) {
       errMessage = message || "Not Found";
     } else if (status === 403) {
-      errMessage = message || "Forbidden";
+      errMessage = message || "Unauthorized Role";
     } else if (status === 500) {
       errMessage = message || "Internal Server Error";
     } else {
