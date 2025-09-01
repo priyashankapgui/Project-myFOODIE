@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -7,14 +9,84 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
 import FileInput from "../form/input/FileInput";
+import { getProfileData } from "@/api/authApis";
+import Badge from "../ui/badge/Badge";
+import Select from "../form/Select";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const [profileData, setProfileData] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
   };
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const data = await getProfileData();
+        setProfileData(data);
+      } catch (err) {
+        setError("Failed to load profile data");
+        console.error("Error fetching profile data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  const getRoleBadge = (role?: string) => {
+    switch (role?.toLowerCase()) {
+      case "supplier":
+        return <Badge color="warning" variant="light">Supplier</Badge>;
+      case "management":
+        return <Badge color="success" variant="light">Management</Badge>;
+      case "normalemployee":
+        return <Badge color="info" variant="light">Employee</Badge>;
+      default:
+        return <Badge color="light" variant="light">Unknown</Badge>;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <div className="flex items-center justify-center h-40">
+          <p className="text-gray-500">Loading profile data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <div className="flex items-center justify-center h-40">
+          <p className="text-red-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+        <div className="flex items-center justify-center h-40">
+          <p className="text-gray-500">No profile data available</p>
+        </div>
+      </div>
+    );
+  }
+
+
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-5  xl:flex-row xl:items-center xl:justify-between">
@@ -29,15 +101,15 @@ export default function UserInfoCard() {
           </div>
           <div className="order-3 xl:order-2">
             <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
-              Musharof Chowdhury
+              {profileData.name.toUpperCase()}
             </h4>
             <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Team Manager
+                {profileData?.roleDetails?.position?.toUpperCase() || ""}
               </p>
               <div className="hidden h-3.5 w-px bg-gray-300 dark:bg-gray-700 xl:block"></div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Arizona, United States
+                {profileData.email}
               </p>
             </div>
           </div>
@@ -73,55 +145,55 @@ export default function UserInfoCard() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
                 Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
+                {profileData.name}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
                 Gender
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Male
+                {profileData.gender?.toUpperCase()}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+                {profileData.email}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Phone
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
+                User Id
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+                {profileData.id}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Position
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
+                Role Id
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                {profileData.roleDetails.id}
               </p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Address
+              <p className="mb-2 text-sm leading-normal text-gray-500 dark:text-gray-400">
+                Role
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Galle Kaluthara
+                {getRoleBadge(profileData?.role)}
               </p>
             </div>
           </div>
@@ -149,12 +221,20 @@ export default function UserInfoCard() {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Name</Label>
-                    <Input type="text" defaultValue="Musharof" />
+                    <Input type="text" defaultValue="" />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Password</Label>
-                    <Input type="password" defaultValue="Chowdhury" />
+                    <Label>Gender</Label>
+                    <Select
+                      defaultValue="male"
+                      onChange={() => { }}
+                      options={[
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                        { value: "other", label: "Other" }
+                      ]}
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">

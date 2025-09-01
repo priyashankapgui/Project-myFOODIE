@@ -1,7 +1,7 @@
 import axiosAuth from "@/lib/axiosAuth";
 import { AuthData } from "@/types/httpResponseType";
 import { setToken, setLocalUser, logoutUser } from "@/store/local_storage";
-import { ProfileDataResponse } from "@/types/httpResponseType";
+import { ProfileEdit } from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
 //* LOGIN
@@ -82,7 +82,7 @@ export async function getProfileData() {
 }
 
 //* Update user profile data
-export async function updateProfileData(data: ProfileDataResponse) {
+export async function updateProfileData(data: ProfileEdit) {
   try {
     const res = await axiosAuth.put(`/auth/update-profile/`, data);
     console.log("Profile data updated successfully:🚀", res.data);

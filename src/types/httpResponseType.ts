@@ -342,7 +342,37 @@ export interface OrderAttributes {
 }>;
 }
 
+export interface OrderSummaryResponse {
+  data: OrderSummaryResponse | undefined;
+  summaries: Array<{
+    id: number;
+    monthlyTotalPrice: number;
+    monthlyTotalEmployeePrice: number;
+      totalMonthlyPrice?: number;
+  monthlyTotalOrders?: number;
+  monthlyTotalItems?: number;
+  monthlyTotalHospitalPrice?: number;
+    supplierId: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+}
 
+export interface supllierMonthlyOrderSummary{
+  id: number;
+  monthlyTotalOrders: number;
+  monthlyTotalItems: number;
+  monthlyTotalPrice: number;
+  monthlyTotalEmployeePrice: number;
+  monthlyTotalHospitalPrice: number;
+  supplierId: string;
+  createdAt: string;
+  updatedAt: string;
+
+}
 export interface ProfileDataResponse {
   id: string;
   name: string;
@@ -358,6 +388,15 @@ export interface ProfileDataResponse {
     position: string;
     departmentName: string;
   };
+}
+
+export interface ProfileEdit {
+  phone?: string | undefined;
+    address?: string | undefined;
+    name: string;
+    email: string;
+    gender: string;
+    imageUrl?: string | undefined
 }
 
 export interface OrderTotals {
@@ -383,6 +422,56 @@ export interface OrderItemAttributes {
   receivedNumberOfItem?: number;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface OrderItem {
+    id: number;
+    orderId: string;
+    receivedNumberOfItem: number | null;
+    foodItemId: number;
+    userId: string;
+    quantity: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Order {
+    id: string;
+    collectedByUserId: string | null;
+    orderCreatorUserId: string;
+    orderDate: string;
+    departmentId: number;
+    mealType: string;
+    totalRequestOrderItems: number;
+    totalPreparedOrderItems: number;
+    totalOrderPrice: number;
+    totalOrderEmployeePrice: number;
+    totalOrderHospitalPrice: number;
+    toBePaidHospitalPrice: number;
+    toBePaidEmployeePrice: number;
+    toBePaidTotalPrice: number;
+    status: string;
+    supplierId: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string | null;
+    foodId: string | null;
+    orderItems: OrderItem[];
+}
+
+// If you need a simplified version for table display (like your TableSupplier)
+export interface TableOrder {
+    id: string;
+    orderDate: string;
+    mealType: string;
+    totalRequestOrderItems: number;
+    totalOrderPrice: number;
+    status: string;
+    orderCreator: {
+        userId: string;
+        userName: string;
+    };
+    departmentId: number;
 }
 
 // Supplier Types (if needed)
