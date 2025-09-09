@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     icon: <FiGrid size={20} />,
     name: "Dashboard",
     path: "/dashboard",
-    allowedRoles: ["management", "supplier", "normalEmployee"],
+    allowedRoles: ["management", "supplier"],
   },
   {
     icon: <FiCoffee size={20} />,
