@@ -36,7 +36,15 @@ export default function SignInForm() {
     try {
       const response = await loginUser(data.email, data.password);
       console.log("Login successful:", response);
-      router.push("/dashboard");
+      if (response.user && response.user.role) {
+        if (response.user.role === "normalEmployee") {
+          router.push("/orders");
+        } else {
+          router.push("/dashboard");
+        }
+      } else {
+        router.push("/dashboard");
+      }
 
     } catch (error: any) {
       console.error("Login failed:", error);
