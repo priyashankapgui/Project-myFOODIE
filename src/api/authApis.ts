@@ -84,6 +84,7 @@ export async function getProfileData() {
 //* Update user profile data
 export async function updateProfileData(data: ProfileEdit) {
   try {
+    console.log("Updating profile data with:", data);
     const res = await axiosAuth.put(`/auth/update-profile/`, data);
     console.log("Profile data updated successfully:🚀", res.data);
     return res.data;

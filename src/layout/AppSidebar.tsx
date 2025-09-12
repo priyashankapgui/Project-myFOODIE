@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
     icon: <FiBox size={20} />,
     name: "Food Items",
     path: "/food-items",
-    allowedRoles: ["management", "supplier", "normalEmployee"],
+    allowedRoles: ["management", "supplier",],
   },
   {
     icon: <FiShoppingBag size={20} />,
@@ -79,7 +79,6 @@ const navItems: NavItem[] = [
   {
     icon: <FiLayers size={20} />,
     name: "Complaints",
-    allowedRoles: ["management", "normalEmployee", "supplier"],
     subItems: [
       {
         name: "Complaint Form",

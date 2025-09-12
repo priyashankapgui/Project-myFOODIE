@@ -129,9 +129,13 @@ export const EcommerceMetrics = () => {
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <BoxIconLine className="text-gray-800 dark:text-white/90" />
           </div>
-          {userRole === "management" && (
+          {userRole === "management" ? (
             <Badge color="info" >
               Manager View
+            </Badge>
+          ) : (
+            <Badge color="success">
+              Supplier View
             </Badge>
           )}
         </div>

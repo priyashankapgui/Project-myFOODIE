@@ -391,13 +391,15 @@ export interface ProfileDataResponse {
 }
 
 export interface ProfileEdit {
-  phone?: string | undefined;
-    address?: string | undefined;
-    name: string;
-    email: string;
-    gender: string;
-    imageUrl?: string | undefined
+  id: string;
+  name?: string;
+  gender?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  imageUrl?: string;
 }
+
 
 export interface OrderTotals {
   totalRequestOrderItems: number;

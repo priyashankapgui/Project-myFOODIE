@@ -13,6 +13,7 @@ export default function UserDropdown(
   const [isOpen, setIsOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -27,6 +28,7 @@ export default function UserDropdown(
     const user = getLocalUser();
     setUserName(user?.name);
     setUserEmail(user?.email);
+    setImageUrl(user?.imageUrl);
   }, []);
 
   const signOut = () => {
@@ -46,8 +48,9 @@ export default function UserDropdown(
           <Image
             width={44}
             height={44}
-            src="/images/user/owner.jpg"
+            src={imageUrl ?? "/images/user/owner.jpg"}
             alt="User"
+            className="w-11 h-11 object-cover rounded-full"
           />
         </span>
 

@@ -14,29 +14,18 @@ import Image from "next/image";
 import { z } from "zod";
 import FileInput from "@/components/form/input/FileInput";
 const DEFAULT_FOOD_IMAGE = "/images/user/owner.jpg";
+import { EditFoodItemFormData, EditfoodItemSchema } from "@/validation/foodItems";
 
-// Validation schema for food item
-export const foodItemSchema = z.object({
-    name: z.string().min(1, "Food item name is required"),
-    description: z.string().optional(),
-    category: z.string().min(1, "Category is required"),
-    price: z.number().min(0, "Price must be a positive number"),
-    employeeprice: z.number().min(0, "Employee price must be a positive number"),
-    hospitalprice: z.number().min(0, "Hospital price must be a positive number"),
-    available: z.boolean(),
-    imageUrl: z.string().optional(),
-});
 
-export type FoodItemFormData = z.infer<typeof foodItemSchema>;
 
 type FoodItemFormProps = {
     mode: "add" | "edit" | "view";
     foodItemId?: number;
-    onSubmit?: (data: FoodItemFormData) => Promise<void>;
+    onSubmit?: (data: EditFoodItemFormData) => Promise<void>;
 };
 
 export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFormProps) {
-    const [formData, setFormData] = useState<FoodItemFormData>({
+    const [formData, setFormData] = useState<EditFoodItemFormData>({
         name: "",
         description: "",
         category: "",
@@ -85,7 +74,7 @@ export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFor
     }, [mode, foodItemId]);
 
     // Handle input changes
-    const handleChange = (field: keyof FoodItemFormData, value: string | number | boolean) => {
+    const handleChange = (field: keyof EditFoodItemFormData, value: string | number | boolean) => {
         if (isReadOnly) return;
         setFormData((prev) => ({
             ...prev,
@@ -119,7 +108,7 @@ export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFor
 
         try {
             // Validate form data
-            const validatedData = foodItemSchema.parse(formData);
+            const validatedData = EditfoodItemSchema.parse(formData);
 
             if (mode === "edit" && foodItemId) {
                 // Update existing food item

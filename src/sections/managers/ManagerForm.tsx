@@ -110,7 +110,7 @@ export default function ManagerForm({ mode, managerId, onSubmit }: ManagerFormPr
                         name: validatedData.name,
                         email: validatedData.email,
                         gender: validatedData.gender,
-                        imageUrl: "", // Provide a default or fetched imageUrl as needed
+                        imageUrl: "https://res.cloudinary.com/dnwnzdvxt/image/upload/v1757689466/aoslzjvtejiho5d3itt9.png",
                     },
                 };
 
