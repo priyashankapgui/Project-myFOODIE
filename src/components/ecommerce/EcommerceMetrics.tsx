@@ -92,9 +92,13 @@ export const EcommerceMetrics = () => {
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <DollarLineIcon className="text-gray-800 size-6 dark:text-white/90" />
           </div>
-          {userRole === "management" && (
+          {userRole === "management" ? (
             <Badge color="info" >
               Manager View
+            </Badge>
+          ) : (
+            <Badge color="success">
+              Supplier View
             </Badge>
           )}
         </div>
@@ -110,7 +114,7 @@ export const EcommerceMetrics = () => {
           </div>
           <div className="flex flex-col space-y-2">
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {userRole === "supplier" ? "Hospital Price" : "All Suppliers"}
+              {userRole === "supplier" ? "Hospital Price" : "Total Hospital Price"}
             </span>
             <Badge color="success">
               {metrics?.monthlyTotalHospitalPrice?.toLocaleString() || "0"}
@@ -125,9 +129,13 @@ export const EcommerceMetrics = () => {
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <BoxIconLine className="text-gray-800 dark:text-white/90" />
           </div>
-          {userRole === "management" && (
+          {userRole === "management" ? (
             <Badge color="info" >
               Manager View
+            </Badge>
+          ) : (
+            <Badge color="success">
+              Supplier View
             </Badge>
           )}
         </div>

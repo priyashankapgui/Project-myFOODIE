@@ -50,7 +50,7 @@ export default function NewSupplierForm({ onSuccess }: NewSupplierFormProps) {
             const payload = {
                 ...validatedData,
                 role: "supplier",
-                imageUrl: "default-supplier-image.jpg",
+                imageUrl: "https://res.cloudinary.com/dnwnzdvxt/image/upload/v1757689466/aoslzjvtejiho5d3itt9.png",
             };
 
             const response = await createSupplier(payload);

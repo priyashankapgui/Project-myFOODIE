@@ -70,7 +70,7 @@ export default function EmployeeForm() {
             const payload = {
                 ...validatedData,
                 role: "normalEmployee",
-                imageUrl: "mekakfjvnfdhdj",
+                imageUrl: "https://res.cloudinary.com/dnwnzdvxt/image/upload/v1757689466/aoslzjvtejiho5d3itt9.png",
             };
 
             const response = createNormalEmployee(payload)

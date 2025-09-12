@@ -68,7 +68,7 @@ export default function AddManagerForm() {
             const payload = {
                 ...validatedData,
                 role: "management",
-                imageUrl: "default-manager-image.jpg",
+                imageUrl: "https://res.cloudinary.com/dnwnzdvxt/image/upload/v1757689466/aoslzjvtejiho5d3itt9.png",
             };
 
             const response = await createManager(payload);
