@@ -50,6 +50,7 @@ export interface NormalEmployee  {
     gender: string;
     name: string;
     email: string;
+    imageUrl: string;
   };
   department: {
     name: string;  

@@ -58,7 +58,7 @@ export default function OrderTable() {
             // Fetch orders based on user role
             if (role === "normalEmployee") {
                 ordersData = await getOrderByUserId(id) ?? [];
-            } else if (role === "manager") {
+            } else if (role === "management") {
                 ordersData = await getAllOrders() ?? [];
             } else if (role === "supplier") {
                 ordersData = await getOrderBySupplierId(roleId) ?? [];

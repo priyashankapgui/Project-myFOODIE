@@ -45,7 +45,7 @@ export default function ManagersTable() {
             const transformedManagers: TableManager[] = apiManagers.map(mgr => ({
                 id: mgr.id,
                 user: {
-                    image: DEFAULT_USER_IMAGE,
+                    image: mgr.user.imageUrl,
                     name: mgr.user.name,
                     role: mgr.position, // Add role property
                     email: mgr.user.email
@@ -186,7 +186,7 @@ export default function ManagersTable() {
                                                     height={40}
                                                     src={manager.user.image || DEFAULT_USER_IMAGE}
                                                     alt={manager.user.name}
-                                                    className="object-cover"
+                                                    className="object-cover w-10 h-10"
                                                     onError={(e) => {
                                                         const target = e.target as HTMLImageElement;
                                                         target.src = DEFAULT_USER_IMAGE;

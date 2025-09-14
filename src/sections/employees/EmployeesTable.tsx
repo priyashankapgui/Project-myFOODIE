@@ -46,7 +46,7 @@ export default function EmployeesTable() {
             const transformedEmployees: TableEmployee[] = apiEmployees.map(emp => ({
                 id: emp.id,
                 user: {
-                    image: DEFAULT_USER_IMAGE,
+                    image: emp.user.imageUrl,
                     name: emp.user.name,
                     role: emp.position,
                     email: emp.user.email
@@ -202,9 +202,9 @@ export default function EmployeesTable() {
                                                 <Image
                                                     width={40}
                                                     height={40}
-                                                    src={employee.user.image || DEFAULT_USER_IMAGE}
+                                                    src={employee.user.image}
                                                     alt={employee.user.name}
-                                                    className="object-cover"
+                                                    className="object-cover w-10 h-10"
                                                     onError={(e) => {
                                                         const target = e.target as HTMLImageElement;
                                                         target.src = DEFAULT_USER_IMAGE;
