@@ -49,7 +49,7 @@ export default function SupplierTable() {
                 foodType: sup.foodType,
                 phone: sup.phone,
                 user: {
-                    image: DEFAULT_USER_IMAGE,
+                    image: sup.user.imageUrl,
                     name: sup.user.name,
                     email: sup.user.email,
                 },
@@ -204,7 +204,7 @@ export default function SupplierTable() {
                                                     height={40}
                                                     src={supplier.user.image || DEFAULT_USER_IMAGE}
                                                     alt={supplier.user.name}
-                                                    className="object-cover"
+                                                    className="object-cover h-10 w-10"
                                                     onError={(e) => {
                                                         const target = e.target as HTMLImageElement;
                                                         target.src = DEFAULT_USER_IMAGE;
