@@ -2,7 +2,7 @@ import axiosAuth from "@/lib/axiosAuth";
 import { OrderSummaryResponse,supllierMonthlyOrderSummary} from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-
+// GET all order summaries
 export const getAllOrderSummary = async () => {
     try{
     const res: OrderSummaryResponse = await axiosAuth.get("/order-summary");
@@ -13,6 +13,7 @@ export const getAllOrderSummary = async () => {
     }
 };
 
+// GET supplier monthly order summary
 export const getSupplierMonthlyOrder = async (supplierId: string, year: number, month: number) => {
     try {
         const res: supllierMonthlyOrderSummary = await axiosAuth.get(`/order-summaries/monthly/${supplierId}/${year}/${month}`);
@@ -23,7 +24,7 @@ export const getSupplierMonthlyOrder = async (supplierId: string, year: number, 
     }
 };
 
-
+// GET all monthly order summaries
 export const  getAllMonthlyOrderSummary = async () => {
     try {
         const res: supllierMonthlyOrderSummary = await axiosAuth.get(`/order-summaries/totals/monthly/`);

@@ -2,13 +2,14 @@ import axiosAuth from "@/lib/axiosAuth";
 import { DepartmentAttributes,DepartmentEdit } from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-
+// GET all departments
 export const getDepartments = async () => {
     const res: DepartmentAttributes[] = await axiosAuth.get("/departments");
     console.log("All Departments:🚀",  res);
     return res;
 };
 
+// CREATE a department
 export const createDepartment = async (data: DepartmentEdit) => {
     try{
         console.log("Creating Department:👨🏽‍💻",  data);
@@ -21,6 +22,7 @@ export const createDepartment = async (data: DepartmentEdit) => {
     }
 };
 
+// GET department by ID
 export const getDepartmentById = async (id: number) => {
     try{
     console.log("Fetching Department by ID:🚀",  id);
@@ -33,6 +35,7 @@ export const getDepartmentById = async (id: number) => {
     }
 };
 
+// UPDATE a department
 export const updateDepartment = async (id: number, data: DepartmentEdit) => {
     try{
     console.log("Updating Department:🚀",  { id, data });
@@ -45,10 +48,7 @@ export const updateDepartment = async (id: number, data: DepartmentEdit) => {
     }
 };
 
-
-
-
-
+// DELETE a department
 export const deleteDepartment = async (id: number) => {
     try{
     console.log("Deleting Department:🚀",  id);

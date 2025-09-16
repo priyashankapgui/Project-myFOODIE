@@ -28,6 +28,7 @@ export default function FoodItemCreateForm({ onSuccess }: FoodItemCreateFormProp
         supplierId: "",
         available: true,
         imageUrl: "",
+        dietType: "",
     });
     const [saving, setSaving] = useState(false);
     const router = useRouter();
@@ -130,6 +131,25 @@ export default function FoodItemCreateForm({ onSuccess }: FoodItemCreateFormProp
                                 placeholder="Select Category"
                                 onChange={(value) => handleChange("category", value)}
                                 value={formData.category}
+                                className="dark:bg-dark-900"
+                            />
+                            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                <ChevronDownIcon />
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <Label>Diet Type</Label>
+                        <div className="relative">
+                            <Select
+                                options={[
+                                    { value: "Veg", label: "Vegetarian" },
+                                    { value: "Non-Veg", label: "Non-Vegetarian" },
+
+                                ]}
+                                placeholder="Select Diet Type"
+                                onChange={(value) => handleChange("dietType", value)}
+                                value={formData.dietType}
                                 className="dark:bg-dark-900"
                             />
                             <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">

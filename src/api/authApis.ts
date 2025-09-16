@@ -4,7 +4,7 @@ import { setToken, setLocalUser, logoutUser } from "@/store/local_storage";
 import { ProfileEdit } from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-//* LOGIN
+// LOGIN
 export async function loginUser(email: string, password: string) {
   try {
     console.log("Logging in user with email:", email, password);
@@ -25,7 +25,7 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-//* LOGOUT
+// LOGOUT
 export async function signOutUser( userId: string ) {
   try {
     const res: AuthData = await axiosAuth.post("/auth/logout", { userId });
@@ -43,7 +43,7 @@ export async function signOutUser( userId: string ) {
   }
 }
 
-//* Request the otp code
+// Request the otp code
 export async function requestPasswordReset(email: string) {
   try {
     const res = await axiosAuth.post("/auth/forgot-password", { email });
@@ -56,7 +56,7 @@ export async function requestPasswordReset(email: string) {
   }
 }
 
-//* Change the  password with otp
+// Change the  password with otp
 export async function  changePasswordwithOtp(email:string,password:string,otp:string) {
   try {
     const res = await axiosAuth.post("/auth/reset-password", { email,password,otp });
@@ -69,7 +69,7 @@ export async function  changePasswordwithOtp(email:string,password:string,otp:st
   
 }
 
-//* Get user profile data
+// Get user profile data
 export async function getProfileData() {
   try {
     const res = await axiosAuth.get(`/auth/profile/`);
@@ -81,7 +81,7 @@ export async function getProfileData() {
   }
 }
 
-//* Update user profile data
+// Update user profile data
 export async function updateProfileData(data: ProfileEdit) {
   try {
     console.log("Updating profile data with:", data);

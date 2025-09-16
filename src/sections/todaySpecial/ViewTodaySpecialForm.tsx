@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { TodaySpecial } from "@/types/httpResponseType";
 import { getFoodItemById } from "@/api/foodItemsApi";
 import Image from "next/image";
+import Badge from "@/components/ui/badge/Badge";
 
 interface TodaySpecialFormProps {
     foodItemId: number;
@@ -41,6 +42,17 @@ export default function TodaySpecialForm({ foodItemId }: TodaySpecialFormProps) 
 
     const formatCurrency = (amount: number) => {
         return `Rs. ${amount.toLocaleString()}`;
+    };
+
+    const getDietTypeBadge = (dietType?: string) => {
+        switch (dietType?.toLowerCase()) {
+            case "veg":
+                return <Badge color="success" variant="light" endIcon={<span className="text-xs">🌱</span>}>Vegetarian</Badge>;
+            case "non-veg":
+                return <Badge color="error" variant="light" endIcon={<span className="text-xs">🥩</span>}>Non-Vegetarian</Badge>;
+            default:
+                return <Badge color="error" variant="light" endIcon={<span className="text-xs">🥩</span>}>Non-Vegetarian</Badge>;
+        }
     };
 
     if (loading) {
@@ -99,6 +111,13 @@ export default function TodaySpecialForm({ foodItemId }: TodaySpecialFormProps) 
                                 </span>
                             </div>
                         </div>
+
+                        <div>
+                            <div className="p-1 mt-1 bg-gray-50 rounded-md dark:bg-gray-800">
+                                {getDietTypeBadge(foodItemData.dietType)}
+                            </div>
+                        </div>
+
 
                         <div>
                             <Label>Category</Label>

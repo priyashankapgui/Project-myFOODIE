@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 export default function ForgotPasswordForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [step, setStep] = useState(1); // 1: Email step, 2: OTP and new password step
+    const [step, setStep] = useState(1);
     const [email, setEmail] = useState("");
     const router = useRouter();
 

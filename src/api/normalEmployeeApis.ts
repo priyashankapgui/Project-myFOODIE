@@ -9,6 +9,7 @@ export const getAllNormalEmployees = async () => {
     return res;
 };
 
+//Create a Normal Employee
 export const createNormalEmployee = async (data: userEmp) => {
     const res: NormalEmployee = await axiosAuth.post("/auth/signup", data);
     console.log("Created Normal Employee:🚀",  res);
@@ -16,12 +17,14 @@ export const createNormalEmployee = async (data: userEmp) => {
     return res;
 };
 
+//Get Normal Employee by ID
 export const getEmployeeById = async (id: string) => {
     const res: EditEmployees = await axiosAuth.get(`/normal-employees/${id}`);
     console.log("Fetched Normal Employee:🚀",  res);
     return res;
 };
 
+//Update a Normal Employee
 export const updateEmployee = async (id: string, data: EdituserEmp) => {
     console.log("Updating Normal Employee:🚀",  { id, data });
     const res: EditEmployees = await axiosAuth.put(`/normal-employees/${id}`, data);
@@ -30,6 +33,7 @@ export const updateEmployee = async (id: string, data: EdituserEmp) => {
     return res;
 };
 
+//Delete a Normal Employee
 export const deleteEmployee = async (id: string) => {
     console.log("Deleting Normal Employee:🚀",  id);
     await axiosAuth.delete(`/normal-employees/${id}`);

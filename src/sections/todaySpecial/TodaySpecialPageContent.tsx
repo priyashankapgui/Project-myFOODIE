@@ -17,6 +17,7 @@ const TodaySpecialPageContent = () => {
                 title="Today Specials Table"
                 showButton={true}
                 handleClick={handleAddOrder}
+                newButtonLabel="Add Your Order"
             >
                 <TodaySpecialsTable />
             </ComponentCard>

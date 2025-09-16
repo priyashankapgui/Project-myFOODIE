@@ -2,7 +2,7 @@
 import {ComplainsAttributes ,ComplainsgetByID} from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-
+// GET all complains
 export const getAllComplains = async () => {
     try{
     const res: ComplainsAttributes[] = await axiosAuth.get("/feedbacks");
@@ -13,7 +13,7 @@ export const getAllComplains = async () => {
     }
 };
 
-
+// CREATE a complain
 export const createComplain = async (data: ComplainsAttributes) => {
     try{
     const res: ComplainsAttributes = await axiosAuth.post("/feedbacks", data);
@@ -24,6 +24,7 @@ export const createComplain = async (data: ComplainsAttributes) => {
     }
 };
 
+// GET complain by ID
 export const getComplainById = async (id: string) => {
     try{
     const res: ComplainsgetByID = await axiosAuth.get(`/feedbacks/${id}`);
@@ -34,6 +35,7 @@ export const getComplainById = async (id: string) => {
     }
 };
 
+// GET complain by Supplier ID
 export const getComplainBySupplierId = async (supplierId: string) => {
     try{
     const res: ComplainsAttributes[] = await axiosAuth.get(`/feedbacks/getbysupplierId/${supplierId}`);
