@@ -34,6 +34,7 @@ export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFor
         hospitalprice: 0,
         available: true,
         imageUrl: "",
+        dietType: "",
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -58,6 +59,7 @@ export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFor
                             hospitalprice: foodItem.hospitalprice || 0,
                             available: foodItem.available || true,
                             imageUrl: foodItem.imageUrl || "",
+                            dietType: foodItem.dietType || "",
                         });
                     }
                 } catch (err) {
@@ -178,6 +180,28 @@ export default function FoodItemForm({ mode, foodItemId, onSubmit }: FoodItemFor
                             </span>
                         </div>
                     </div>
+
+                    <div>
+                        <Label>Diet Type</Label>
+                        <div className="relative">
+                            <Select
+                                options={[
+                                    { value: "Non-Veg", label: "Non-Vegetarian" },
+                                    { value: "Veg", label: "Vegetarian" },
+
+                                ]}
+                                placeholder="Select Diet Type"
+                                onChange={(value) => handleChange("dietType", value)}
+                                value={formData.dietType}
+                                className="dark:bg-dark-900"
+                                disabled={isReadOnly}
+                            />
+                            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                <ChevronDownIcon />
+                            </span>
+                        </div>
+                    </div>
+
 
                     <div>
                         <Label>Price (Rs.)</Label>

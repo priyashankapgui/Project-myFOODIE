@@ -2,7 +2,7 @@ import axiosAuth from "@/lib/axiosAuth";
 import {OrderAttributes,Order} from "@/types/httpResponseType";;
 import { toast } from "react-toastify";
 
-
+// CREATE an order
 export const createOrder = async (data: OrderAttributes) => {
     try{
         console.log("Creating Department:👨🏽‍💻",  data);
@@ -15,7 +15,7 @@ export const createOrder = async (data: OrderAttributes) => {
     }
 };
 
-
+// GET order by ID
 export const getOrderById = async (id: string) => {
     try {
         console.log("Fetching Order:👨🏽‍💻", id);
@@ -27,6 +27,7 @@ export const getOrderById = async (id: string) => {
     }
 };
 
+// UPDATE an order
 export const updateOrder = async (id: string, data: Order) => {
     try {
         console.log("Updating Order:👨🏽‍💻", id, data);
@@ -39,6 +40,7 @@ export const updateOrder = async (id: string, data: Order) => {
     }
 };
 
+// GET all orders
 export const getAllOrders = async () => {
     try {
         console.log("Fetching All Orders:👨🏽‍💻");
@@ -50,6 +52,7 @@ export const getAllOrders = async () => {
     }
 };
 
+// GET orders by User ID
 export const getOrderByUserId = async (userId: string) => {
     try {
         console.log("Fetching Orders by User ID:👨🏽‍💻", userId);
@@ -61,7 +64,7 @@ export const getOrderByUserId = async (userId: string) => {
     }
 };
 
-
+// GET orders by Supplier ID
 export const getOrderBySupplierId = async (supplierId: string) => {
     try {
         console.log("Fetching Orders by Supplier ID:👨🏽‍💻", supplierId);
@@ -73,6 +76,7 @@ export const getOrderBySupplierId = async (supplierId: string) => {
     }
 };
 
+// UPDATE order status
 export const updateOrderStatus = async (orderId: string, data:Order) => {
     try {
         console.log("Updating Order:👨🏽‍💻", orderId, data .status);

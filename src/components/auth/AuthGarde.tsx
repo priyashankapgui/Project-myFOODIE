@@ -14,12 +14,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const token = getToken();
 
-        // If not logged in and accessing protected route → redirect to signin
+        //? If not logged in and accessing protected route → redirect to signin
         if (!token && !publicRoutes.includes(pathname)) {
             router.replace("/signin");
         }
 
-        // If logged in and trying to access auth routes → redirect to dashboard
+        //? If logged in and trying to access auth routes → redirect to dashboard
         if (token && publicRoutes.includes(pathname)) {
             router.replace("/");
         }

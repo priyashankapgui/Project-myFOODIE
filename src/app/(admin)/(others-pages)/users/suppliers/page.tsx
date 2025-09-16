@@ -1,10 +1,7 @@
 "use client"
+import React from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import SupplierpageContent from "@/sections/suppliers/SupplierpageConten";
-
-import React from "react";
-
-
 
 export default function SuppliersPage() {
     return (

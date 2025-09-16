@@ -8,13 +8,15 @@ interface ComponentCardProps {
   className?: string; // Additional custom classes for styling
   desc?: string; // Description text
   handleClick?: () => void;
-  showButton?: boolean; // Show button or not
+  showButton?: boolean;
+  newButtonLabel?: string;
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = ({
   title,
   children,
   className = "",
+  newButtonLabel = "New",
   desc = "",
   handleClick,
   showButton = false,
@@ -37,7 +39,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
 
           {showButton && (
             <Button size="sm" variant="outline" startIcon={<FiPlusCircle />} onClick={handleClick} >
-              New
+              {newButtonLabel}
             </Button>
           )}
 

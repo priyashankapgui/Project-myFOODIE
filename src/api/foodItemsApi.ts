@@ -2,19 +2,21 @@ import axiosAuth from "@/lib/axiosAuth";
 import { FoodItemAttributes,FoodItemEdit ,TodaySpecial,Userdep} from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-
+// GET all food items
 export const getAllFoodItems = async () => {
     const res: FoodItemAttributes[] = await axiosAuth.get("/food-items");
     console.log("All Food Items:🚀",  res);
     return res;
 };
 
+// GET food items by supplier ID
 export const getFoodItemsBySupplierId = async (supplierId: string) => {
     const res: FoodItemAttributes[] = await axiosAuth.get(`/food-items/supplier/${supplierId}`);
     console.log("Food Items by Supplier ID:🚀",  res);
     return res;
 };
 
+// CREATE a food item
 export const createFoodItem = async (data: FoodItemEdit) => {
     try{
         console.log("Creating Food Item:👨🏽‍💻",  data);
@@ -27,12 +29,14 @@ export const createFoodItem = async (data: FoodItemEdit) => {
     }
 };
 
+// GET food item by ID
 export const getFoodItemById = async (id: number) => {
     const res: TodaySpecial = await axiosAuth.get(`/food-items/${id}`);
     console.log("Food Item by ID:🚀",  res);
     return res;
 };
 
+// UPDATE a food item
 export const updateFoodItem = async (id: number, data: FoodItemEdit) => {
     try {
         console.log("Updating Food Item:👨🏽‍💻",  data);
@@ -45,12 +49,14 @@ export const updateFoodItem = async (id: number, data: FoodItemEdit) => {
     }
 };
 
+// GET today's special food items
 export const todaySpecial = async () => {
     const res: TodaySpecial[] = await axiosAuth.get("/food-items/foods/todayspecials");
     console.log("Today's Special Food Items:🚀",  res);
     return res;
 };
 
+// GET department users by department ID
 export const getDepartmentUsers = async (departmentId: number) => {
     const res: Userdep = await axiosAuth.get(`/food-items/user/departmentUser/${departmentId}`);
     console.log("Department Users:🚀", res);

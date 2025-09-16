@@ -8,6 +8,7 @@ export const foodItemSchema = z.object({
   supplierId: z.string().min(1, "Supplier ID is required"),
   available: z.boolean(),
   imageUrl: z.string().optional(),
+  dietType:  z.string().min(1, "Diet Type is required"),
 });
 
 export type FoodItemFormData = z.infer<typeof foodItemSchema>;
@@ -21,6 +22,7 @@ export const EditfoodItemSchema = z.object({
     employeeprice: z.number().min(0, "Employee price must be a positive number"),
     hospitalprice: z.number().min(0, "Hospital price must be a positive number"),
     available: z.boolean(),
+    dietType:  z.string().min(1, "Diet Type is required"),
     imageUrl: z.string().optional(),
 });
 

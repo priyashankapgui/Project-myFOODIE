@@ -2,7 +2,7 @@ import axiosAuth from "@/lib/axiosAuth";
 import {SupplierResponse,userSupplier,EditSupplier,} from "@/types/httpResponseType";
 import { toast } from "react-toastify";
 
-
+//Get All the Suppliers
 export const getAllSuppliers = async () => {
     try{
     const res: SupplierResponse[] = await axiosAuth.get("/suppliers");
@@ -13,7 +13,7 @@ export const getAllSuppliers = async () => {
     }
 };
 
-
+// CREATE a supplier
 export const createSupplier = async (data: userSupplier) => {
     try{
     const res: SupplierResponse = await axiosAuth.post("/auth/signup", data);
@@ -25,6 +25,7 @@ export const createSupplier = async (data: userSupplier) => {
     }
 };
 
+// GET supplier by ID
 export const getSupplierById = async (id: string) => {
     try{
     console.log("Fetching Supplier by ID:🚀",  id);
@@ -37,6 +38,7 @@ export const getSupplierById = async (id: string) => {
     }
 };
 
+// UPDATE a supplier
 export const updateSupplier = async (id: string, data: EditSupplier) => {
     try{
     console.log("Updating Supplier:🚀",  { id, data });
@@ -49,6 +51,7 @@ export const updateSupplier = async (id: string, data: EditSupplier) => {
     }
 };
 
+// DELETE a supplier
 export const deleteSupplier = async (id: string) => {
     try{
     console.log("Deleting Supplier:🚀",  id);

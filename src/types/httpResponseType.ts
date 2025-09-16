@@ -199,6 +199,7 @@ export interface FoodItemAttributes {
   hospitalprice: number;
   category: string;
   imageUrl?: string;
+  dietType: string;
   available: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -224,9 +225,12 @@ export interface FoodItemEdit {
   category: string;
   imageUrl?: string;
   available: boolean;
+  dietType: string;
+
 }
 
 export interface TodaySpecial {
+  dietType: string;
   id : number;
   name: string;
   description: string;
