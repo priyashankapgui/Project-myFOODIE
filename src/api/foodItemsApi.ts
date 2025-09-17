@@ -62,3 +62,14 @@ export const getDepartmentUsers = async (departmentId: number) => {
     console.log("Department Users:🚀", res);
     return res;
 };
+
+// DELETE a food item
+export const deleteFoodItem = async (id: number) => {
+    try {
+        console.log("Deleting Food Item:👨🏽‍💻", id);
+        await axiosAuth.delete(`/food-items/${id}`);
+        toast.success("Food Item deleted successfully");
+    } catch {
+        toast.error("Failed to delete food item");
+    }
+};

@@ -457,6 +457,9 @@ export interface Order {
     toBePaidHospitalPrice: number;
     toBePaidEmployeePrice: number;
     toBePaidTotalPrice: number;
+    department: {
+        name: string;
+    };
     status: string;
     supplierId: string;
     createdAt: string;

@@ -12,7 +12,7 @@ import Image from "next/image";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
 import { FiTrash, FiEye, FiEdit } from "react-icons/fi";
-import { getAllFoodItems, getFoodItemsBySupplierId } from "@/api/foodItemsApi";
+import { getAllFoodItems, getFoodItemsBySupplierId, deleteFoodItem } from "@/api/foodItemsApi";
 import { FoodItemAttributes } from "@/types/httpResponseType";
 import Popup from "@/components/ui/popup/Popup";
 import FoodItemForm from "./EditFoodItemForm";
@@ -98,12 +98,12 @@ export default function FoodItemsTable() {
     };
 
     const confirmDelete = async () => {
-        if (!selectedFoodItem) return;
+        if (!selectedFoodItem || selectedFoodItem.id === undefined) return;
         try {
             console.log("Deleting food item with ID:", selectedFoodItem.id);
-            // await deleteFoodItem(selectedFoodItem.id);
+            await deleteFoodItem(selectedFoodItem.id);
             toast.success("Food item deleted successfully!");
-            fetchFoodItems(currentUser); // refresh table
+            fetchFoodItems(currentUser);
         } catch (err: unknown) {
             toast.error((err as { message?: string })?.message || "Failed to delete food item");
         }
@@ -198,7 +198,7 @@ export default function FoodItemsTable() {
                                                 height={40}
                                                 src={foodItem.imageUrl || DEFAULT_FOOD_IMAGE}
                                                 alt={foodItem.name}
-                                                className="object-cover"
+                                                className="object-cover w-10 h-10"
                                                 onError={(e) => {
                                                     const target = e.target as HTMLImageElement;
                                                     target.src = DEFAULT_FOOD_IMAGE;

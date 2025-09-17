@@ -193,6 +193,10 @@ export default function EditOrderForm({ mode, order, onUpdate }: OrderFormProps)
                         <Label className="font-semibold">Ordered By (User ID)</Label>
                         <p className="text-theme-base">{order.orderCreatorUserId}</p>
                     </div>
+                    <div>
+                        <Label className="font-semibold">Department</Label>
+                        <p className="text-theme-base">{order.department.name}</p>
+                    </div>
                 </div>
 
                 {/* Status Selection */}
